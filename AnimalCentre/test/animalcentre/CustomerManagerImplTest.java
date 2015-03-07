@@ -85,7 +85,52 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testUpdateCustomer() {
-        fail("The test case is a prototype.");
+        //fail("The test case is a prototype.");
+        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer2 = newCustomer(654321, "A B", "homeless", "09yy yyy yyy");
+                      
+        manager.createCustomer(customer);
+        manager.createCustomer(customer2); 
+        
+        long cID = customer.getCustomerID();
+        
+        customer = manager.getCustomerByID(cID); //meni id
+        customer.setCustomerID(0);
+        manager.updateCustomer(customer);        
+        assertEquals(0, customer.getCustomerID());
+        assertEquals("X Y", customer.getName());
+        assertEquals("adresa", customer.getAddress());
+        assertEquals("09xx xxx xxx",customer.getPhoneNumber());
+
+        
+        customer = manager.getCustomerByID(cID); //meni meno
+        customer.setName("NO NAME");
+        manager.updateCustomer(customer);        
+        assertEquals(0, customer.getCustomerID());
+        assertEquals("NO NAME", customer.getName());
+        assertEquals("adresa", customer.getAddress());
+        assertEquals("09xx xxx xxx", customer.getPhoneNumber());
+        
+        customer = manager.getCustomerByID(cID); //meni adresu
+        customer.setAddress("NOWHERE");
+        manager.updateCustomer(customer);        
+        assertEquals(0, customer.getCustomerID());
+        assertEquals("NO NAME", customer.getName());
+        assertEquals("NOWHERE", customer.getAddress());
+        assertEquals("09xx xxx xxx", customer.getPhoneNumber());
+        
+        customer = manager.getCustomerByID(cID); //meni tel.cislo
+        customer.setPhoneNumber("123");
+        manager.updateCustomer(customer);        
+        assertEquals(0, customer.getCustomerID());
+        assertEquals("NO NAME", customer.getName());
+        assertEquals("NOWHERE", customer.getAddress());
+        assertEquals("123", customer.getPhoneNumber());
+        
+        
+        // Check if updates didn't affected other records
+        assertDeepEquals(customer2, manager.getCustomerByID(customer2.getCustomerID()));
+        
     }
 
     /**
