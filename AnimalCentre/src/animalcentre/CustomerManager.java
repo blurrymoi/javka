@@ -12,11 +12,11 @@ import java.util.*;
  */
 public interface CustomerManager {
     
-    public void createCustomer(Customer customer) throws NoServiceException;
-    public Customer getCustomerByID(long ID) throws NoServiceException;
-    public List<Customer> findAllCustomers() throws NoServiceException;
-    public void updateCustomer(Customer customer) throws NoServiceException;
-    public void deleteCustomer(Customer customer) throws NoServiceException;
+    public void createCustomer(Customer customer) throws NotYetException;
+    public Customer getCustomerByID(long ID) throws NotYetException;
+    public List<Customer> findAllCustomers() throws NotYetException;
+    public void updateCustomer(Customer customer) throws NotYetException;
+    public void deleteCustomer(Customer customer) throws NotYetException;
 
     
 }

@@ -56,6 +56,44 @@ public class Adoption {
     public void setAnimal(Animal animal) {
         this.animal = animal;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (int) (this.adoptionID ^ (this.adoptionID >>> 32));
+        hash = 59 * hash + Objects.hashCode(this.dateOfAdoption);
+        hash = 59 * hash + Objects.hashCode(this.customer);
+        hash = 59 * hash + Objects.hashCode(this.animal);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Adoption other = (Adoption) obj;
+        if (this.adoptionID != other.adoptionID) {
+            return false;
+        }
+        if (!Objects.equals(this.dateOfAdoption, other.dateOfAdoption)) {
+            return false;
+        }
+        if (!Objects.equals(this.dateOfReturn, other.dateOfReturn)) {
+            return false;
+        }
+        if (!Objects.equals(this.customer, other.customer)) {
+            return false;
+        }
+        if (!Objects.equals(this.animal, other.animal)) {
+            return false;
+        }
+        return true;
+    }
+    
     
     
 }
