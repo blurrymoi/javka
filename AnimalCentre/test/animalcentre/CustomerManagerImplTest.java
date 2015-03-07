@@ -47,23 +47,14 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testCreateCustomer() {
-        /*System.out.println("createCustomer");
-        Customer customer = null;
-        CustomerManagerImpl instance = new CustomerManagerImpl();
-        instance.createCustomer(customer);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");*/
-        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
-        manager.createCustomer(customer);
-        
-        Long customerID = customer.getCustomerID();
-        assertNotNull(customerID);
-        Customer result = manager.getCustomerByID(customerID);
+        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx"); //vytv. random customera
+        manager.createCustomer(customer); //vytv. rovnakeho cust. do manager
+        Long customerID = customer.getCustomerID(); 
+        assertNotNull(customerID); //nesmie byt null
+        Customer result = manager.getCustomerByID(customerID); 
         assertEquals(customer, result);
-        //assertNotSame(customer, result); --what is this
-        assertDeepEquals(customer, result);
-        
-        
+        //assertNotSame(customer, result); //--what is this
+        assertDeepEquals(customer, result);   
     }
 
     /**
@@ -71,14 +62,14 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testGetCustomerByID() {
-        System.out.println("getCustomerByID");
-        long ID = 0L;
-        CustomerManagerImpl instance = new CustomerManagerImpl();
-        Customer expResult = null;
-        Customer result = instance.getCustomerByID(ID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        //assertNull(manager.getGrave(1l)); //-- what
+        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        manager.createCustomer(customer);
+        Long customerID = customer.getCustomerID(); 
+        Customer result = manager.getCustomerByID(customerID); 
+        assertEquals(customer, result);
+        assertDeepEquals(customer, result);   
+        
     }
 
     /**
@@ -86,12 +77,6 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testFindAllCustomers() {
-        System.out.println("findAllCustomers");
-        CustomerManagerImpl instance = new CustomerManagerImpl();
-        List<Customer> expResult = null;
-        List<Customer> result = instance.findAllCustomers();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
@@ -100,11 +85,6 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testUpdateCustomer() {
-        System.out.println("updateCustomer");
-        Customer customer = null;
-        CustomerManagerImpl instance = new CustomerManagerImpl();
-        instance.updateCustomer(customer);
-        // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
@@ -113,14 +93,11 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testDeleteCustomer() {
-        System.out.println("deleteCustomer");
-        Customer customer = null;
-        CustomerManagerImpl instance = new CustomerManagerImpl();
-        instance.deleteCustomer(customer);
-        // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+
+        
+    /***************************POMOCNE METODY***********************************/
     private static Customer newCustomer(long customerID, String name, String address, String phoneNumber) {
         Customer customer = new Customer();
         customer.setCustomerID(customerID);
@@ -129,8 +106,7 @@ public class CustomerManagerImplTest {
         customer.setPhoneNumber(phoneNumber);
         return customer;
     }
-    
-    
+
     private void assertDeepEquals(List<Customer> expectedList, List<Customer> actualList) {
         for (int i = 0; i < expectedList.size(); i++) {
             Customer expected = expectedList.get(i);
@@ -147,7 +123,6 @@ public class CustomerManagerImplTest {
     }
     
     private static Comparator<Customer> idComparator = new Comparator<Customer>() {
-
         @Override
         public int compare(Customer o1, Customer o2) {
             return Long.valueOf(o1.getCustomerID()).compareTo(Long.valueOf(o2.getCustomerID()));
