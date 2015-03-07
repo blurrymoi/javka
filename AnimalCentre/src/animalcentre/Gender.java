@@ -11,10 +11,12 @@ package animalcentre;
  */
 public enum Gender 
 {
-    MALE,
+    MALE("male"),
+    FEMALE("female");
+    
+    private String gender;
 
-    /**
-     *
-     */
-    FEMALE
+    private Gender(String gender) {
+        this.gender = gender;
+    }
 }
