@@ -14,37 +14,37 @@ import java.util.List;
 public class AdoptionManagerImpl implements AdoptionManager {
     
     @Override
-    public void createAdoption(Adoption adoption) throws NoServiceException {
+    public void createAdoption(Adoption adoption) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public Adoption getAdoptionByID(long ID) throws NoServiceException {
+    public Adoption getAdoptionByID(long ID) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public List<Adoption> findAllAdoptions() throws NoServiceException {
+    public List<Adoption> findAllAdoptions() throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void updateAdoption(Adoption adoption) throws NoServiceException {
+    public void updateAdoption(Adoption adoption) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void deleteAdoption(Adoption adoption) throws NoServiceException {
+    public void deleteAdoption(Adoption adoption) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public List<Adoption> findAllAdoptionsByCustomer(Customer customer) throws NoServiceException {
+    public List<Adoption> findAllAdoptionsByCustomer(Customer customer) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public List<Adoption> findAllAdoptionsOfAnimal(Animal animal) throws NoServiceException {
+    public List<Adoption> findAllAdoptionsOfAnimal(Animal animal) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

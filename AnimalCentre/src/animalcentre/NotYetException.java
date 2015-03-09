@@ -9,17 +9,17 @@ package animalcentre;
  *
  * @author Barbora
  */
-public class NoServiceException extends RuntimeException{
+public class NotYetException extends RuntimeException{
     
-    public NoServiceException(String msg) {
+    public NotYetException(String msg) {
         super(msg);
     }
 
-    public NoServiceException(Throwable cause) {
+    public NotYetException(Throwable cause) {
         super(cause);
     }
 
-    public NoServiceException(String message, Throwable cause) {
+    public NotYetException(String message, Throwable cause) {
         super(message, cause);
     }
     

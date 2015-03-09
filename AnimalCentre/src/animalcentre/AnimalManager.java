@@ -12,11 +12,11 @@ import java.util.*;
  */
 public interface AnimalManager {
  
-    public void createAnimal(Animal animal) throws NoServiceException;
-    public Animal getAnimalByID(long ID) throws NoServiceException;
-    public List<Animal> findAllAnimals() throws NoServiceException;
-    public void updateAnimal(Animal animal) throws NoServiceException;
-    public void deleteAnimal(Animal animal) throws NoServiceException;
-    public void neuterAnimal(Animal animal) throws NoServiceException;
+    public void createAnimal(Animal animal) throws NotYetException;
+    public Animal getAnimalByID(long ID) throws NotYetException;
+    public List<Animal> findAllAnimals() throws NotYetException;
+    public void updateAnimal(Animal animal) throws NotYetException;
+    public void deleteAnimal(Animal animal) throws NotYetException;
+    public void neuterAnimal(Animal animal) throws NotYetException;
     
 }

@@ -13,31 +13,31 @@ import java.util.List;
  */
 public class AnimalManagerImpl implements AnimalManager{
     @Override
-    public void createAnimal(Animal animal) throws NoServiceException {
+    public void createAnimal(Animal animal) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     @Override
-    public Animal getAnimalByID(long ID) throws NoServiceException {
+    public Animal getAnimalByID(long ID) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override   
-    public List<Animal> findAllAnimals() throws NoServiceException {
+    public List<Animal> findAllAnimals() throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void updateAnimal(Animal animal) throws NoServiceException {
+    public void updateAnimal(Animal animal) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void deleteAnimal(Animal animal) throws NoServiceException {
+    public void deleteAnimal(Animal animal) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void neuterAnimal(Animal animal) throws NoServiceException {
+    public void neuterAnimal(Animal animal) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

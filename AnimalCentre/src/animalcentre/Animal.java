@@ -5,6 +5,9 @@
  */
 package animalcentre;
 //import java.util.*;
+
+import java.util.Objects;
+
 /**
  *
  * @author Barbora
@@ -56,6 +59,44 @@ public class Animal {
 
     public void setNeutered(boolean neutered) {
         this.neutered = neutered;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.animalID ^ (this.animalID >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + this.yearOfBirth;
+        hash = 97 * hash + Objects.hashCode(this.gender);
+        hash = 97 * hash + (this.neutered ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Animal other = (Animal) obj;
+        if (this.animalID != other.animalID) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (this.yearOfBirth != other.yearOfBirth) {
+            return false;
+        }
+        if (this.gender != other.gender) {
+            return false;
+        }
+        if (this.neutered != other.neutered) {
+            return false;
+        }
+        return true;
     }
     
     
