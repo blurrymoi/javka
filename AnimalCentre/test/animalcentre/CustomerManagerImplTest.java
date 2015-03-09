@@ -5,8 +5,8 @@
  */
 package animalcentre;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.sql.SQLException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,30 +21,12 @@ import static org.junit.Assert.*;
 public class CustomerManagerImplTest {
     
     private CustomerManagerImpl manager;
-    
-    /*public CustomerManagerImplTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }*/
-    
+
     @Before
     public void setUp() {
         manager = new CustomerManagerImpl();
     }
-    
-    /*@After
-    public void tearDown() {
-    }*/
 
-    /**
-     * Test of createCustomer method, of class CustomerManagerImpl.
-     */
     @Test
     public void testCreateCustomer() {
         Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx"); //vytv. random customera
@@ -53,23 +35,25 @@ public class CustomerManagerImplTest {
         assertNotNull(customerID); //nesmie byt null
         Customer result = manager.getCustomerByID(customerID); 
         assertEquals(customer, result);
-        //assertNotSame(customer, result); //--what is this
+        assertNotSame(customer, result); //--wtf is this
         assertDeepEquals(customer, result);   
     }
 
+    /*@Test 
+    public void createCustomerBadAttrib() { //laaaater. 
+    }*/
+    
     /**
      * Test of getCustomerByID method, of class CustomerManagerImpl.
      */
     @Test
     public void testGetCustomerByID() {
-        //assertNull(manager.getGrave(1l)); //-- what
         Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
         Long customerID = customer.getCustomerID(); 
         Customer result = manager.getCustomerByID(customerID); 
         assertEquals(customer, result);
         assertDeepEquals(customer, result);   
-        
     }
 
     /**
@@ -77,7 +61,24 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testFindAllCustomers() {
-        fail("The test case is a prototype.");
+        //fail("The test case is a prototype.");
+        assertTrue(manager.findAllCustomers().isEmpty());
+        Customer customer1 = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer2 = newCustomer(654321, "A B", "homeless", "09yy yyy yyy");   
+        Customer customer3 = newCustomer(000000, "C D", "dead", "N/A"); //because why not
+        manager.createCustomer(customer1);
+        manager.createCustomer(customer2); 
+        manager.createCustomer(customer2); 
+        //List<Customer> expected = Arrays.asList(customer1,customer2,customer3);
+        List<Customer> zakaznici = new ArrayList<Customer>(); //is that good..nobody knows
+        zakaznici.add(customer1);
+        zakaznici.add(customer2);
+        zakaznici.add(customer3);
+        List<Customer> copy = manager.findAllCustomers();        
+        Collections.sort(zakaznici,idComparator);
+        Collections.sort(copy,idComparator);
+        assertEquals(zakaznici, copy);
+        assertDeepEquals(zakaznici, copy);       
     }
 
     /**
@@ -88,7 +89,6 @@ public class CustomerManagerImplTest {
         //fail("The test case is a prototype.");
         Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
         Customer customer2 = newCustomer(654321, "A B", "homeless", "09yy yyy yyy");
-                      
         manager.createCustomer(customer);
         manager.createCustomer(customer2); 
         
@@ -102,35 +102,31 @@ public class CustomerManagerImplTest {
         assertEquals("adresa", customer.getAddress());
         assertEquals("09xx xxx xxx",customer.getPhoneNumber());
 
-        
         customer = manager.getCustomerByID(cID); //meni meno
-        customer.setName("NO NAME");
+        customer.setName(null);
         manager.updateCustomer(customer);        
         assertEquals(0, customer.getCustomerID());
-        assertEquals("NO NAME", customer.getName());
+        assertNull(customer.getName());
         assertEquals("adresa", customer.getAddress());
         assertEquals("09xx xxx xxx", customer.getPhoneNumber());
         
         customer = manager.getCustomerByID(cID); //meni adresu
-        customer.setAddress("NOWHERE");
+        customer.setAddress(null);
         manager.updateCustomer(customer);        
         assertEquals(0, customer.getCustomerID());
-        assertEquals("NO NAME", customer.getName());
-        assertEquals("NOWHERE", customer.getAddress());
+        assertNull(customer.getName());
+        assertNull(customer.getAddress());
         assertEquals("09xx xxx xxx", customer.getPhoneNumber());
         
         customer = manager.getCustomerByID(cID); //meni tel.cislo
-        customer.setPhoneNumber("123");
+        customer.setPhoneNumber(null);
         manager.updateCustomer(customer);        
         assertEquals(0, customer.getCustomerID());
-        assertEquals("NO NAME", customer.getName());
-        assertEquals("NOWHERE", customer.getAddress());
-        assertEquals("123", customer.getPhoneNumber());
+        assertNull(customer.getName());
+        assertNull(customer.getAddress());
+        assertNull(customer.getPhoneNumber());//now you have no identity lol
         
-        
-        // Check if updates didn't affected other records
         assertDeepEquals(customer2, manager.getCustomerByID(customer2.getCustomerID()));
-        
     }
 
     /**
@@ -138,12 +134,17 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testDeleteCustomer() {
-        fail("The test case is a prototype.");
+        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        manager.createCustomer(customer);
+        long cID = customer.getCustomerID();
+        manager.deleteCustomer(customer);
+        Customer pom = manager.getCustomerByID(cID);
+        assertNull(pom);
     }
 
         
     /***************************POMOCNE METODY***********************************/
-    private static Customer newCustomer(long customerID, String name, String address, String phoneNumber) {
+    private static Customer newCustomer(long customerID, String name, String address, String phoneNumber) { //pseudokostruktor, pretoze normalne konstruktory su mainstream
         Customer customer = new Customer();
         customer.setCustomerID(customerID);
         customer.setName(name);
@@ -152,22 +153,22 @@ public class CustomerManagerImplTest {
         return customer;
     }
 
-    private void assertDeepEquals(List<Customer> expectedList, List<Customer> actualList) {
+    private void assertDeepEquals(Customer expected, Customer actual) { //equals customerov
+        assertEquals(expected.getCustomerID(), actual.getCustomerID());
+        assertEquals(expected.getAddress(), actual.getAddress());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
+    }    
+    
+    private void assertDeepEquals(List<Customer> expectedList, List<Customer> actualList) { //equals listov
         for (int i = 0; i < expectedList.size(); i++) {
             Customer expected = expectedList.get(i);
             Customer actual = actualList.get(i);
             assertDeepEquals(expected, actual);
         }
     }
-
-    private void assertDeepEquals(Customer expected, Customer actual) {
-        assertEquals(expected.getCustomerID(), actual.getCustomerID());
-        assertEquals(expected.getAddress(), actual.getAddress());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
-    }
     
-    private static Comparator<Customer> idComparator = new Comparator<Customer>() {
+    private static Comparator<Customer> idComparator = new Comparator<Customer>() { 
         @Override
         public int compare(Customer o1, Customer o2) {
             return Long.valueOf(o1.getCustomerID()).compareTo(Long.valueOf(o2.getCustomerID()));
