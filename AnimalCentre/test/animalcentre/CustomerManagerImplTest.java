@@ -89,7 +89,7 @@ public class CustomerManagerImplTest {
         manager.createCustomer(customer);
         manager.createCustomer(customer2); 
         
-        long cID = customer.getCustomerID();
+        Long cID = customer.getCustomerID();
         
         customer = manager.getCustomerByID(cID); //meni id
         customer.setCustomerID(0);
@@ -133,7 +133,7 @@ public class CustomerManagerImplTest {
     public void testDeleteCustomer() {
         Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
-        long cID = customer.getCustomerID();
+        Long cID = customer.getCustomerID();
         manager.deleteCustomer(customer);
         Customer pom = manager.getCustomerByID(cID);
         assertNull(pom);
@@ -141,7 +141,7 @@ public class CustomerManagerImplTest {
 
         
     /***************************POMOCNE METODY***********************************/
-    private static Customer newCustomer(long customerID, String name, String address, String phoneNumber) { //pseudokostruktor, pretoze normalne konstruktory su mainstream
+    private static Customer newCustomer(Long customerID, String name, String address, String phoneNumber) { //pseudokostruktor, pretoze normalne konstruktory su mainstream
         Customer customer = new Customer();
         customer.setCustomerID(customerID);
         customer.setName(name);
