@@ -11,13 +11,13 @@ import java.util.*;
  */
 public class Adoption {
 
-    private long adoptionID;
+    private Long adoptionID;
     private Date dateOfAdoption;
     private Date dateOfReturn;
     private Customer customer;
     private Animal animal;
 
-    public long getAdoptionID() {
+    public Long getAdoptionID() {
         return adoptionID;
     }
 
@@ -37,7 +37,7 @@ public class Adoption {
         return animal;
     }
 
-    public void setAdoptionID(long adoptionID) {
+    public void setAdoptionID(Long adoptionID) {
         this.adoptionID = adoptionID;
     }
 

@@ -19,7 +19,7 @@ public class AdoptionManagerImpl implements AdoptionManager {
     }
     
     @Override
-    public Adoption getAdoptionByID(long ID) throws NotYetException {
+    public Adoption getAdoptionByID(Long ID) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

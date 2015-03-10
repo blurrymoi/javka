@@ -17,7 +17,7 @@ public class AnimalManagerImpl implements AnimalManager{
         throw new UnsupportedOperationException("Not supported yet.");
     }
     @Override
-    public Animal getAnimalByID(long ID) throws NotYetException {
+    public Animal getAnimalByID(Long ID) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

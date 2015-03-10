@@ -12,7 +12,7 @@ import java.util.*;
 public interface AdoptionManager {
    
     public void createAdoption(Adoption adoption) throws NotYetException;
-    public Adoption getAdoptionByID(long ID) throws NotYetException;
+    public Adoption getAdoptionByID(Long ID) throws NotYetException;
     public List<Adoption> findAllAdoptions() throws NotYetException;
     public void updateAdoption(Adoption adoption) throws NotYetException;
     public void deleteAdoption(Adoption adoption) throws NotYetException;  

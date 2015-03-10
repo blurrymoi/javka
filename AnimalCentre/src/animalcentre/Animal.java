@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class Animal {
     
-    private long animalID; 
+    private Long animalID; 
     private String name;
     private int yearOfBirth;
     private Gender gender;
@@ -25,7 +25,7 @@ public class Animal {
         return animalID;
     }
 
-    public void setAnimalID(long animalID) {
+    public void setAnimalID(Long animalID) {
         this.animalID = animalID;
     }
 

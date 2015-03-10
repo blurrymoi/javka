@@ -128,7 +128,7 @@ public class CustomerManagerImplTest {
         assertEquals("123", customer.getPhoneNumber());
         
         
-        // Check if updates didn't affected other records
+        // Check if updates didn't affect other records
         assertDeepEquals(customer2, manager.getCustomerByID(customer2.getCustomerID()));
         
     }

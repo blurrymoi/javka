@@ -17,7 +17,7 @@ public class CustomerManagerImpl implements CustomerManager {
     }
     
     @Override
-    public Customer getCustomerByID(long ID) throws NotYetException {
+    public Customer getCustomerByID(Long ID) throws NotYetException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Customer {
     private String name; 
     private String address;
-    private long customerID;
+    private Long customerID;
     private String phoneNumber;
 
     public String getName() {
@@ -27,7 +27,7 @@ public class Customer {
         return address;
     }
 
-    public long getCustomerID() {
+    public Long getCustomerID() {
         return customerID;
     }
 
