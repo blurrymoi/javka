@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/src/animalcentre/AnimalManager.java</file>
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/test/animalcentre/AnimalManagerImplTest.java</file>
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/src/animalcentre/CustomerManagerImpl.java</file>
@@ -17,6 +18,11 @@
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/src/animalcentre/AdoptionManagerImpl.java</file>
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/test/animalcentre/AnimalCentreTest.java</file>
             <file>file:/C:/Users/blurry/Documents/GitHub/javka/javka/AnimalCentre/src/animalcentre/CustomerManager.java</file>
+=======
+            <file>file:/C:/Users/Barbora/Desktop/javka/AnimalCentre/src/animalcentre/CustomerManagerImpl.java</file>
+            <file>file:/C:/Users/Barbora/Desktop/javka/AnimalCentre/test/animalcentre/AnimalManagerImplTest.java</file>
+            <file>file:/C:/Users/Barbora/Desktop/javka/AnimalCentre/test/animalcentre/CustomerManagerImplTest.java</file>
+>>>>>>> 3e9ddb225e51ffe702980e24041b56df68839101
         </group>
     </open-files>
 </project-private>
