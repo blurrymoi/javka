@@ -26,7 +26,7 @@ public class CustomerManagerImplTest {
 
     @Test
     public void testCreateCustomer() {
-        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx"); //vytv. random customera
+        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx"); //vytv. random customera
         manager.createCustomer(customer); //vytv. rovnakeho cust. do manager
         Long customerID = customer.getCustomerID(); 
         assertNotNull(customerID); //nesmie byt null
@@ -45,7 +45,7 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testGetCustomerByID() {
-        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
         Long customerID = customer.getCustomerID(); 
         Customer result = manager.getCustomerByID(customerID); 
@@ -60,9 +60,9 @@ public class CustomerManagerImplTest {
     public void testFindAllCustomers() {
         //fail("The test case is a prototype.");
         assertTrue(manager.findAllCustomers().isEmpty());
-        Customer customer1 = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
-        Customer customer2 = newCustomer(654321, "A B", "homeless", "09yy yyy yyy");   
-        Customer customer3 = newCustomer(000000, "C D", "dead", "N/A"); //because why not
+        Customer customer1 = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer2 = newCustomer(654321L, "A B", "homeless", "09yy yyy yyy");   
+        Customer customer3 = newCustomer(000000L, "C D", "dead", "N/A"); //because why not
         manager.createCustomer(customer1);
         manager.createCustomer(customer2); 
         manager.createCustomer(customer2); 
@@ -84,8 +84,8 @@ public class CustomerManagerImplTest {
     @Test
     public void testUpdateCustomer() {
         //fail("The test case is a prototype.");
-        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
-        Customer customer2 = newCustomer(654321, "A B", "homeless", "09yy yyy yyy");
+        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer2 = newCustomer(654321L, "A B", "homeless", "09yy yyy yyy");
         manager.createCustomer(customer);
         manager.createCustomer(customer2); 
         
@@ -94,7 +94,7 @@ public class CustomerManagerImplTest {
         customer = manager.getCustomerByID(cID); //meni id
         customer.setCustomerID(0);
         manager.updateCustomer(customer);        
-        assertEquals(0, customer.getCustomerID());
+        assertEquals(0L, customer.getCustomerID());
         assertEquals("X Y", customer.getName());
         assertEquals("adresa", customer.getAddress());
         assertEquals("09xx xxx xxx",customer.getPhoneNumber());
@@ -102,7 +102,7 @@ public class CustomerManagerImplTest {
         customer = manager.getCustomerByID(cID); //meni meno
         customer.setName(null);
         manager.updateCustomer(customer);        
-        assertEquals(0, customer.getCustomerID());
+        assertEquals(0L, customer.getCustomerID());
         assertNull(customer.getName());
         assertEquals("adresa", customer.getAddress());
         assertEquals("09xx xxx xxx", customer.getPhoneNumber());
@@ -110,7 +110,7 @@ public class CustomerManagerImplTest {
         customer = manager.getCustomerByID(cID); //meni adresu
         customer.setAddress(null);
         manager.updateCustomer(customer);        
-        assertEquals(0, customer.getCustomerID());
+        assertEquals(0L, customer.getCustomerID());
         assertNull(customer.getName());
         assertNull(customer.getAddress());
         assertEquals("09xx xxx xxx", customer.getPhoneNumber());
@@ -118,7 +118,7 @@ public class CustomerManagerImplTest {
         customer = manager.getCustomerByID(cID); //meni tel.cislo
         customer.setPhoneNumber(null);
         manager.updateCustomer(customer);        
-        assertEquals(0, customer.getCustomerID());
+        assertEquals(0L, customer.getCustomerID());
         assertNull(customer.getName());
         assertNull(customer.getAddress());
         assertNull(customer.getPhoneNumber());//now you have no identity lol
@@ -131,7 +131,7 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testDeleteCustomer() {
-        Customer customer = newCustomer(123546, "X Y", "adresa", "09xx xxx xxx");
+        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
         Long cID = customer.getCustomerID();
         manager.deleteCustomer(customer);
