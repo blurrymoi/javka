@@ -12,27 +12,27 @@ import java.util.List;
 public class CustomerManagerImpl implements CustomerManager {
     
     @Override
-    public void createCustomer(Customer customer) throws NotYetException {
+    public void createCustomer(Customer customer) throws ServiceFailureException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public Customer getCustomerByID(Long ID) throws NotYetException {
+    public Customer getCustomerByID(Long ID) throws ServiceFailureException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public List<Customer> findAllCustomers() throws NotYetException {
+    public List<Customer> findAllCustomers() throws ServiceFailureException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void updateCustomer(Customer customer) throws NotYetException {
+    public void updateCustomer(Customer customer) throws ServiceFailureException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public void deleteCustomer(Customer customer) throws NotYetException {
+    public void deleteCustomer(Customer customer) throws ServiceFailureException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

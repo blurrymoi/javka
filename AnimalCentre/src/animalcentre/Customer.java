@@ -43,7 +43,7 @@ public class Customer {
         this.address = address;
     }
 
-    public void setCustomerID(long customerID) {
+    public void setCustomerID(Long customerID) {
         this.customerID = customerID;
     }
 

@@ -11,12 +11,12 @@ import java.util.*;
  */
 public interface AdoptionManager {
    
-    public void createAdoption(Adoption adoption) throws NotYetException;
-    public Adoption getAdoptionByID(Long ID) throws NotYetException;
-    public List<Adoption> findAllAdoptions() throws NotYetException;
-    public void updateAdoption(Adoption adoption) throws NotYetException;
-    public void deleteAdoption(Adoption adoption) throws NotYetException;  
-    public List<Adoption> findAllAdoptionsByCustomer(Customer customer) throws NotYetException;
-    public List<Adoption> findAllAdoptionsOfAnimal(Animal animal) throws NotYetException;
+    public void createAdoption(Adoption adoption) throws ServiceFailureException;
+    public Adoption getAdoptionByID(Long ID) throws ServiceFailureException;
+    public List<Adoption> findAllAdoptions() throws ServiceFailureException;
+    public void updateAdoption(Adoption adoption) throws ServiceFailureException;
+    public void deleteAdoption(Adoption adoption) throws ServiceFailureException;  
+    public List<Adoption> findAllAdoptionsByCustomer(Customer customer) throws ServiceFailureException;
+    public List<Adoption> findAllAdoptionsOfAnimal(Animal animal) throws ServiceFailureException;
     
 }

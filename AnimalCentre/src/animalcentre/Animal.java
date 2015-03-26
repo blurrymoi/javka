@@ -21,7 +21,7 @@ public class Animal {
     private Gender gender;
     private boolean neutered;
 
-    public long getAnimalID() {
+    public Long getAnimalID() {
         return animalID;
     }
 
@@ -93,10 +93,7 @@ public class Animal {
         if (this.gender != other.gender) {
             return false;
         }
-        if (this.neutered != other.neutered) {
-            return false;
-        }
-        return true;
+        return this.neutered == other.neutered;
     }
     
     
