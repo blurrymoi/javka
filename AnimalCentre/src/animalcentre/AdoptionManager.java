@@ -10,7 +10,8 @@ import java.util.*;
  * @author Barbora
  */
 public interface AdoptionManager {
-   
+    
+       
     public void createAdoption(Adoption adoption) throws ServiceFailureException;
     public Adoption getAdoptionByID(Long ID) throws ServiceFailureException;
     public List<Adoption> findAllAdoptions() throws ServiceFailureException;

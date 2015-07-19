@@ -1,0 +1,22 @@
+mai 30, 2015 11:30:13 PM my.animalcentre.AnimCentrUI <init>
+INFO: Application started
+mai 30, 2015 11:30:46 PM my.animalcentre.CustomerUI getCustomer
+INFO: Customer added: [5] Rezan Antoně, 43 London Street, 2344543534
+mai 30, 2015 11:31:04 PM my.animalcentre.CustomerEditUI buttonOKActionPerformed
+INFO: Customer [5] updated to: [5] Rezan Antoněé, 43 London Street, 2344543534; formerly was [5] Rezan Antoně, 43 London Street, 2344543534
+mai 30, 2015 11:31:31 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [9] - adoption date: 01/01/2015   return date: null   animal: 21   customer: 5
+mai 30, 2015 11:31:31 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [9] - adoption date: 01/01/2015   return date: null   animal: 21   customer: 5
+mai 30, 2015 11:32:32 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 26   customer: 5
+mai 30, 2015 11:32:32 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 26   customer: 5
+mai 30, 2015 11:32:50 PM my.animalcentre.AdoptionEditUI buttonOKActionPerformed
+INFO: Adoption [10] updated to: [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 23   customer: 5; formerly was [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 13   customer: 5
+mai 30, 2015 11:32:50 PM my.animalcentre.AdoptionEditUI buttonOKActionPerformed
+INFO: Adoption [10] updated to: [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 23   customer: 5; formerly was [10] - adoption date: 06/07/2014   return date: 15/07/2015   animal: 13   customer: 5
+mai 30, 2015 11:33:09 PM my.animalcentre.AdoptionUI buttonRemoveActionPerformed
+INFO: Adoption removed: [9] - adoption date: 01/01/2015   return date: null   animal: 21   customer: 5
+mai 30, 2015 11:33:09 PM my.animalcentre.AdoptionUI buttonRemoveActionPerformed
+INFO: Adoption removed: [9] - adoption date: 01/01/2015   return date: null   animal: 21   customer: 5

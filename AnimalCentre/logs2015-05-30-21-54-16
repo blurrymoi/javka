@@ -1,0 +1,4 @@
+mai 30, 2015 9:54:16 PM my.animalcentre.AnimCentrUI <init>
+INFO: Application started
+mai 30, 2015 9:54:26 PM my.animalcentre.AnimalEditUI buttonOKActionPerformed
+INFO: Animal [12] updated to: [12] veveru (1856), FEMALE, neutered; formerly was [12] veveru (1856), FEMALE, neutered

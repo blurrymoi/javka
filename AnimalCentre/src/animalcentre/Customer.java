@@ -85,5 +85,10 @@ public class Customer {
         return true;
     }
     
+    @Override
+    public String toString() {
+        return "[" + customerID + "] " + name + ", " + address + ", " + phoneNumber;
+    }
+    
        
 }

@@ -1,0 +1,4 @@
+mai 30, 2015 10:17:22 PM my.animalcentre.AnimCentrUI <init>
+INFO: Application started
+mai 30, 2015 10:17:34 PM my.animalcentre.AnimalEditUI buttonOKActionPerformed
+INFO: Animal [13] updated to: [13] globbach (2010), FEMALE, not neutered; formerly was [13] glob (2015), FEMALE, neutered

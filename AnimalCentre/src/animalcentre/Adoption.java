@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 package animalcentre;
+import java.text.SimpleDateFormat;
 import java.util.*;
 /**
  *
- * @author Barbora
+ * @author Barbora, blurry
  */
 public class Adoption {
 
@@ -93,7 +94,22 @@ public class Adoption {
         }
         return true;
     }
-    
-    
+
+   
+    @Override
+    public String toString() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dateA = sdf.format(dateOfAdoption);
+        String dateR;
+        if (dateOfReturn == null) 
+            dateR = "null"; 
+        else 
+            dateR = sdf.format(dateOfReturn);
+
+        return "[" + adoptionID + "] - adoption date: " + dateA + "   return date: " + dateR + "   animal: " + animal.getAnimalID() + "   customer: " + customer.getCustomerID();
+    }
+
+
     
 }

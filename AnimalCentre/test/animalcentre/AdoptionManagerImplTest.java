@@ -5,63 +5,149 @@
  */
 package animalcentre;
 
-import static animalcentre.Gender.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.text.ParseException;
-import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Comparator;
-import java.util.Date;
+import static animalcentre.Gender.*;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.sql.DataSource;
+import org.apache.commons.lang.time.DateUtils;
+//import org.apache.derby.client.am.DateTime;
 
 /**
  *
- * @author Barbora
+ * @author Barbora, blurry
  */
 public class AdoptionManagerImplTest {
     
-    private AdoptionManagerImpl manager;
-    
-    public AdoptionManagerImplTest() {
-    }
-    
-    
+    private AdoptionManager manager;
+    private DataSource ds;
+    private CustomerManager customerManager;
+    private AnimalManager animalManager;
+
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException, IOException {
+
+        ds = DBstuff.dataSource2();
+        /*
+        try (Connection conn = ds.getConnection()){
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ADOPTION)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ANIMAL)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_CUSTOMER)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+            */
+            
         
-        manager = new AdoptionManagerImpl();
+        try (Connection conn = ds.getConnection()) {            
+                      
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_ANIMAL)){
+                pr.executeUpdate();
+            }
+            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_CUSTOMER)){
+                pr.executeUpdate();
+            }
+            
+             try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_ADOPTION)){
+                pr.executeUpdate();
+            }
+       // } 
+        manager = new AdoptionManagerImpl(ds);
+        customerManager = new CustomerManagerImpl(ds);
+        animalManager = new AnimalManagerImpl(ds);
+        }
     }
+    /*
+    @Before
+    public void setUp() throws SQLException, IOException {
+               
+        ds = DBstuff.dataSource2();
+        
+        try (Connection conn = ds.getConnection()) {            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_ADOPTION)){
+                pr.executeUpdate();
+            }
+        } 
+        manager = new AdoptionManagerImpl(ds);
+    } */
+    
+    @After
+    public void tearDown() throws SQLException, IOException {
+        ds = DBstuff.dataSource2();
+        try (Connection conn = ds.getConnection()){
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ADOPTION)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+            
+             try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ANIMAL)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+             
+              try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_CUSTOMER)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+    }
+}
     
     /**
      * Test of createAdoption method, of class AdoptionManagerImpl.
+     * @throws java.text.ParseException
      */
     @Test
     public void testCreateAdoption() throws ParseException {
-        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        customerManager.createCustomer(customer);
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        animalManager.createAnimal(animal);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
         
-        Adoption adoption = newAdoption(date1,date2,customer, animal);
+        Adoption adoption = newAdoption(date1, date2, customer, animal);
         manager.createAdoption(adoption);
         Long adoptionID = adoption.getAdoptionID();
         Adoption result = manager.getAdoptionByID(adoptionID); 
+        System.out.println(adoption);
+        System.out.println(result);
         assertEquals(adoption, result);
-        assertNotSame(adoption, result); //--wtf is this
+        assertNotSame(adoption, result);
         assertDeepEquals(adoption, result);
         
-    } //DONE
+    }
 
     public void testCreateAdoptionWithWrongAttributes() throws ParseException {
 
-	Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+	Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
 
@@ -74,7 +160,7 @@ public class AdoptionManagerImplTest {
         }
 
         Adoption adoption = newAdoption(date1,date2,customer, animal );
-        adoption.setAdoptionID(null); //TOTO?
+        adoption.setAdoptionID(null); 
         try {
             manager.createAdoption(adoption);
             fail();
@@ -146,7 +232,7 @@ public class AdoptionManagerImplTest {
             //OK
         }
 
-} //DONE
+} 
     
    
     /**
@@ -154,8 +240,10 @@ public class AdoptionManagerImplTest {
      */
     @Test
     public void testGetAdoptionByID() throws ParseException {
-        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        customerManager.createCustomer(customer);
+        animalManager.createAnimal(animal);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
         Adoption adoption = newAdoption(date1 ,date2,customer, animal);
@@ -174,8 +262,10 @@ public class AdoptionManagerImplTest {
     public void testFindAllAdoptions() throws ParseException { //DONE
         assertTrue(manager.findAllAdoptions().isEmpty());
 
-	Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+	Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        customerManager.createCustomer(customer);
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        animalManager.createAnimal(animal);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
         Adoption adoption1 = newAdoption(date1,date2,customer, animal );
@@ -184,10 +274,10 @@ public class AdoptionManagerImplTest {
 
         manager.createAdoption(adoption1);
         manager.createAdoption(adoption2); 
-        manager.createAdoption(adoption2); 
+        manager.createAdoption(adoption3); 
 
-        //List<Customer> expected = Arrays.asList(customer1,customer2,customer3);
-        List<Adoption> adoptions = new ArrayList<>(); //is that good..nobody knows
+        
+        List<Adoption> adoptions = new ArrayList<>(); 
         adoptions.add(adoption1);
         adoptions.add(adoption2);
         adoptions.add(adoption3);
@@ -203,11 +293,13 @@ public class AdoptionManagerImplTest {
      */
     @Test
     public void testUpdateAdoption() throws ParseException {
-        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
-
+        customerManager.createCustomer(customer);
+        animalManager.createAnimal(animal);
+        
        	Adoption adoption = newAdoption(date1, date2, customer, animal);
        	Adoption adoption2 = newAdoption(date1, date2, customer, animal);
 
@@ -216,22 +308,12 @@ public class AdoptionManagerImplTest {
         
         Long cID = adoption.getAdoptionID();
         
-        adoption = manager.getAdoptionByID(cID); //meni id
-        Long lo = 5L;
-        adoption.setAdoptionID(lo);
-        manager.updateAdoption(adoption); 
-        Long lol = adoption.getAdoptionID();
-        assertEquals(lo, lol);
-        assertEquals(date1, adoption.getDateOfAdoption());
-        assertEquals(date2, adoption.getDateOfReturn());
-        assertEquals(customer,adoption.getCustomer());
-        assertEquals(animal,adoption.getAnimal());
-
+        
         adoption = manager.getAdoptionByID(cID); //meni date1
-        Date date3 = new Date();
+        Date date3 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2000");
         adoption.setDateOfAdoption(date3);
 	manager.updateAdoption(adoption);        
-        assertEquals(lo, lol);
+
         assertEquals(date3, adoption.getDateOfAdoption());
         assertEquals(date2, adoption.getDateOfReturn());
         assertEquals(customer,adoption.getCustomer());
@@ -242,29 +324,33 @@ public class AdoptionManagerImplTest {
         Date date4 = new Date();
         adoption.setDateOfReturn(date4);
         manager.updateAdoption(adoption);        
-        assertEquals(lo, lol);
+        
         assertEquals(date3, adoption.getDateOfAdoption());
         assertEquals(date4, adoption.getDateOfReturn());
         assertEquals(customer,adoption.getCustomer());
         assertEquals(animal,adoption.getAnimal());
         
-        adoption = manager.getAdoptionByID(cID); //meni cstoemr
-        Customer cus = newCustomer(1L, "X Y", "adresa", "09xx xxx xxx");
+        adoption = manager.getAdoptionByID(cID); //meni customer
+        Customer cus = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        customerManager.createCustomer(cus);
+        
 	adoption.setCustomer(cus);
         manager.updateAdoption(adoption);        
-        assertEquals(lo, lol);
-        assertEquals(date3, adoption.getDateOfAdoption());
-        assertEquals(date4, adoption.getDateOfReturn());
+       
+        assertEquals(true, DateUtils.isSameDay(date4, adoption.getDateOfReturn()));
+        assertEquals(true, DateUtils.isSameDay(date3, adoption.getDateOfAdoption()));
+        
         assertEquals(cus,adoption.getCustomer());
         assertEquals(animal,adoption.getAnimal());
 
         adoption = manager.getAdoptionByID(cID); //meni animal
-        Animal ani = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Animal ani = newAnimal("Lassie", 1994, FEMALE, true);
+        animalManager.createAnimal(ani);
 	adoption.setAnimal(ani);
         manager.updateAdoption(adoption);        
-        assertEquals(lo, lol);
-        assertEquals(date3, adoption.getDateOfAdoption());
-        assertEquals(date4, adoption.getDateOfReturn());
+        
+        assertEquals(true, DateUtils.isSameDay(date4, adoption.getDateOfReturn()));
+        assertEquals(true, DateUtils.isSameDay(date3, adoption.getDateOfAdoption()));
         assertEquals(cus,adoption.getCustomer());
         assertEquals(ani,adoption.getAnimal());
         
@@ -274,12 +360,14 @@ public class AdoptionManagerImplTest {
     @Test
     public void testUpdateAdoptionWithWrongAttributes() throws ParseException { //DONE
         
-	Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+	Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
 
-       Adoption adoption = newAdoption(date1,date2,customer, animal );
+        customerManager.createCustomer(customer);
+        animalManager.createAnimal(animal);
+        Adoption adoption = newAdoption(date1,date2,customer, animal );
 
         manager.createAdoption(adoption);
         Long adoptionID = adoption.getAdoptionID();
@@ -322,12 +410,12 @@ public class AdoptionManagerImplTest {
             adoption = manager.getAdoptionByID(adoptionID);
             adoption.setDateOfReturn(null);
             manager.updateAdoption(adoption);        
-            fail();
         } catch (IllegalArgumentException ex) {
-            //OK
+            fail();
         }
 
         try {
+            System.out.println(adoption);
             adoption = manager.getAdoptionByID(adoptionID);
             adoption.setCustomer(null);
             manager.updateAdoption(adoption);        
@@ -352,8 +440,10 @@ public class AdoptionManagerImplTest {
      */
     @Test
     public void testDeleteAdoption() throws ParseException {
-        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        customerManager.createCustomer(customer);
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        animalManager.createAnimal(animal);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
        	Adoption adoption = newAdoption(date1,date2,customer, animal );
@@ -367,8 +457,10 @@ public class AdoptionManagerImplTest {
     @Test
     public void testDeleteAdoptionWithWrongAttributes() throws ParseException {
         
-        Customer customer = newCustomer(123546L, "X Y", "adresa", "09xx xxx xxx");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        customerManager.createCustomer(customer);
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        animalManager.createAnimal(animal);
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
 
@@ -437,13 +529,16 @@ public class AdoptionManagerImplTest {
      */
     @Test
     public void testFindAllAdoptionsByCustomer() throws ParseException { 
+        
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
         
-        Customer customer = newCustomer(221L, "Peter", "Brno", "+09234923");
-        assertNull(manager.findAllAdoptionsByCustomer(customer));
+        Customer customer = newCustomer("Peter", "Brno", "+09234923");
+        customerManager.createCustomer(customer);
+        assertTrue(manager.findAllAdoptionsByCustomer(customer).isEmpty());
         
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);        
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true); 
+        animalManager.createAnimal(animal);
         Adoption adoption = newAdoption(date1, date2, customer, animal);  
         manager.createAdoption(adoption);
         
@@ -453,7 +548,8 @@ public class AdoptionManagerImplTest {
         date1 = new SimpleDateFormat("dd/MM/yyyy").parse("02/02/2003");
         date2 = null;
         
-        Animal animal2 = newAnimal(23L,"Norton", 1994, null, true);        
+        Animal animal2 = newAnimal("Norton", 1994, null, true);  
+        animalManager.createAnimal(animal2);
         Adoption adoption2 = newAdoption(date1, date2, customer, animal2);
         manager.createAdoption(adoption2);
         adExpected.add(adoption2);
@@ -486,9 +582,12 @@ public class AdoptionManagerImplTest {
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2005");
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse("05/12/2007");
         
-        Customer customer = newCustomer(221L, "Peter", "Brno", "+09234923");
-        Animal animal = newAnimal(34L,"Lassie", 1994, FEMALE, true);        
-        assertNull(manager.findAllAdoptionsOfAnimal(animal));
+        Customer customer = newCustomer("Peter", "Brno", "+09234923");
+        Animal animal = newAnimal("Lassie", 1994, FEMALE, true);
+        customerManager.createCustomer(customer);
+        animalManager.createAnimal(animal);
+                
+        assertTrue((manager.findAllAdoptionsOfAnimal(animal)).isEmpty());
         
         Adoption adoption = newAdoption(date1, date2, customer, animal);  
         manager.createAdoption(adoption);
@@ -531,10 +630,9 @@ public class AdoptionManagerImplTest {
         return adoption; //done
     }
     
-    private static Animal newAnimal(Long id, String name, int year, Gender gender, boolean neutered) {
+    private static Animal newAnimal(String name, int year, Gender gender, boolean neutered) {
 
         Animal animal = new Animal();
-        animal.setAnimalID(id);
         animal.setName(name);
         animal.setYearOfBirth(year);
         animal.setGender(gender);
@@ -542,9 +640,8 @@ public class AdoptionManagerImplTest {
         return animal;
     }
     
-        private static Customer newCustomer(Long customerID, String name, String address, String phoneNumber) { //pseudokostruktor, pretoze normalne konstruktory su mainstream
+        private static Customer newCustomer(String name, String address, String phoneNumber) { //pseudokostruktor, pretoze normalne konstruktory su mainstream
         Customer customer = new Customer();
-        customer.setCustomerID(customerID);
         customer.setName(name);
         customer.setAddress(address);
         customer.setPhoneNumber(phoneNumber);

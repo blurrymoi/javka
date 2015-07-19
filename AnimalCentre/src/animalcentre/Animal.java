@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Barbora
+ * @author blurry
  */
 
 public class Animal {
@@ -20,6 +20,7 @@ public class Animal {
     private int yearOfBirth;
     private Gender gender;
     private boolean neutered;
+
 
     public Long getAnimalID() {
         return animalID;
@@ -60,6 +61,7 @@ public class Animal {
     public void setNeutered(boolean neutered) {
         this.neutered = neutered;
     }
+      
 
     @Override
     public int hashCode() {
@@ -95,6 +97,13 @@ public class Animal {
         }
         return this.neutered == other.neutered;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        String neut;
+        if (neutered) neut = "neutered"; 
+            else neut = "not neutered";
+        return "[" + animalID + "] " + name + " (" + yearOfBirth + "), " + gender + ", " + neut;
+    }
+        
 }

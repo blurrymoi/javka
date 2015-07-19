@@ -1,0 +1,24 @@
+mai 30, 2015 11:44:16 PM my.animalcentre.AnimCentrUI <init>
+INFO: Application started
+mai 30, 2015 11:44:28 PM my.animalcentre.AnimalUI buttonRemoveActionPerformed
+INFO: Animal removed: [25] Nero 5 (1990), MALE, not neutered
+mai 30, 2015 11:45:04 PM my.animalcentre.CustomerUI getCustomer
+INFO: Customer added: [6] Lo Me, Kuracia 5, +33564
+mai 30, 2015 11:45:04 PM my.animalcentre.CustomerUI getCustomer
+INFO: Customer added: [6] Lo Me, Kuracia 5, +33564
+mai 30, 2015 11:45:15 PM my.animalcentre.CustomerEditUI buttonOKActionPerformed
+INFO: Customer [6] updated to: [6] Lo Me, Kuracia 5, +33564567890000; formerly was [6] Lo Me, Kuracia 5, +33564
+mai 30, 2015 11:45:15 PM my.animalcentre.CustomerEditUI buttonOKActionPerformed
+INFO: Customer [6] updated to: [6] Lo Me, Kuracia 5, +33564567890000; formerly was [6] Lo Me, Kuracia 5, +33564
+mai 30, 2015 11:45:39 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6
+mai 30, 2015 11:45:39 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6
+mai 30, 2015 11:45:39 PM my.animalcentre.AdoptionUI getAdoption
+INFO: Adoption added: [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6
+mai 30, 2015 11:45:49 PM my.animalcentre.AdoptionEditUI buttonOKActionPerformed
+INFO: Adoption [11] updated to: [11] - adoption date: 04/05/2015   return date: null   animal: 32   customer: 6; formerly was [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6
+mai 30, 2015 11:45:49 PM my.animalcentre.AdoptionEditUI buttonOKActionPerformed
+INFO: Adoption [11] updated to: [11] - adoption date: 04/05/2015   return date: null   animal: 32   customer: 6; formerly was [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6
+mai 30, 2015 11:45:49 PM my.animalcentre.AdoptionEditUI buttonOKActionPerformed
+INFO: Adoption [11] updated to: [11] - adoption date: 04/05/2015   return date: null   animal: 32   customer: 6; formerly was [11] - adoption date: 01/05/2015   return date: null   animal: 32   customer: 6

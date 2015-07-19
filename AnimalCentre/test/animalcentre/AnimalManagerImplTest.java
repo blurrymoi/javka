@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.junit.After;
-//import org.junit.AfterClass;
 import org.junit.Before;
-//import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
@@ -15,11 +13,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import javax.sql.DataSource;
 import java.sql.*;
-import org.apache.commons.dbcp2.BasicDataSource;
-//import animalcentre.DBstuff;
-import org.apache.derby.jdbc.ClientDataSource;
-
-
 
 /**
  *
@@ -30,32 +23,20 @@ public class AnimalManagerImplTest {
     private AnimalManager manager;
     private DataSource ds;
 
-    /*
-     private static DataSource prepareDataSource() throws SQLException {
-        ClientDataSource dataSource = new ClientDataSource();
-        dataSource.setServerName("localhost");
-        dataSource.setDatabaseName("animal;create=true");
-       
-        dataSource.setUser("blurry");
-        dataSource.setPassword("");
-        return dataSource;
-    }*/
-    
-    
     @Before
     public void setUp() throws SQLException, IOException {
-        //String url = "jdbc:derby://localhost:1527/animal";
-
-        //BasicDataSource ds = new BasicDataSource(); <<<
-        //ds.setUrl(url); <<<
-        
+               
         ds = DBstuff.dataSource2();
         
-        //Context ctx = new InitialContext();
-        //source = (DataSource)ctx.lookup(context);
-                
-        try (Connection conn = ds.getConnection()) {            
-            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE)){
+        try (Connection conn = ds.getConnection()){
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ANIMAL)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+        
+        //try (Connection conn = ds.getConnection()) {            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_ANIMAL)){
                 pr.executeUpdate();
             }
         } 
@@ -66,36 +47,12 @@ public class AnimalManagerImplTest {
     public void tearDown() throws SQLException, IOException {
         ds = DBstuff.dataSource2();
         try (Connection conn = ds.getConnection()){
-            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL)){                
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_ANIMAL)){                
                     pr.executeUpdate();
         } catch (SQLException e) { 
             if (!e.getSQLState().equals("42Y55")) throw e;
             }
     } 
-            /*
-        
-        
-        try {
->>            stmt.executeUpdate("DROP TABLE MY_TABLE");
->>        } catch (SQL_Exception e) {
->>            if (!e.getSQLState().equals("proper SQL-state for table does not exist"))
-    
-    In Derby it is:
->             if (!e.getSQLState().equals("42Y55"))
-        
-        
-        */
-    
-    //String urlDrop = "jdbc:derby://localhost:1527/animal;drop=true";
-/*
-    
-    @After
-    public void tearDown() throws SQLException{
-    try {
-        DriverManager.getConnection(urlDrop);
-    } catch (SQLException e) {
-        // ignore
-    }*/
 }
     
     
@@ -224,15 +181,15 @@ public class AnimalManagerImplTest {
     public void testFindAllAnimals() {
         System.out.println("looking for animals (list)..");
         
-        assertNull(manager.findAllAnimals());
-        
+        assertTrue((manager.findAllAnimals()).isEmpty());
+              
         Animal animal = newAnimal("Greg", 2012, MALE, false);
         manager.createAnimal(animal);
         
         List<Animal> listExpected = new ArrayList<Animal>();
         listExpected.add(animal);
         
-        Animal animal2 = newAnimal(null, 2010, FEMALE, true);
+        Animal animal2 = newAnimal("Tae", 2010, FEMALE, true);
         manager.createAnimal(animal2);
         listExpected.add(animal2);
         
@@ -273,15 +230,17 @@ public class AnimalManagerImplTest {
         animal2.setYearOfBirth(1032);
         
         manager.updateAnimal(animal2);
-                
-        assertEquals("NotFido", animal.getName());
-        assertEquals(FEMALE, animal.getGender());
-        assertEquals(true, animal.isNeutered());
-        assertEquals(1032, animal.getYearOfBirth());
+        Animal animal3 = manager.getAnimalByID(animID);
+        
+        assertEquals("NotFido", animal3.getName());
+        assertEquals(FEMALE, animal3.getGender());
+        assertEquals(true, animal3.isNeutered());
+        assertEquals(1032, animal3.getYearOfBirth());
         
         animal2.setGender(null);
         manager.updateAnimal(animal2);
-        assertNull(animal.getGender());
+        animal3 = manager.getAnimalByID(animID);
+        assertNull(animal3.getGender());
         
         assertDeepEquals(dontAffectAnimal, manager.getAnimalByID(dontAffectAnimal.getAnimalID()));
                
@@ -312,7 +271,7 @@ public class AnimalManagerImplTest {
         animal2.setAnimalID(-100L);
         
         try {
-            manager.updateAnimal(animal);
+            manager.updateAnimal(animal2);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
@@ -339,6 +298,16 @@ public class AnimalManagerImplTest {
         }
         
         animal2.setYearOfBirth(animal.getYearOfBirth());
+        
+        Animal animal3 = newAnimal("What", 103, MALE, false);
+        animal3.setAnimalID(8L); //not in table?
+        try {
+            manager.updateAnimal(animal3);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+        //System.out.println(manager.findAllAnimals()); //seems to work^^
                
         assertDeepEquals(animal,animal2);
         assertDeepEquals(dontAffectAnimal, manager.getAnimalByID(dontAffectAnimal.getAnimalID()));       
@@ -367,34 +336,6 @@ public class AnimalManagerImplTest {
         
     }
 
-    /**
-     * Test of findAllAdoptionsOfAnimal method, of class AdoptionManagerImpl.
-     */
-    @Test
-    public void testFindAllAdoptionsOfAnimal() {
-        
-        System.out.println("looking for animals (list)..");
-        
-        assertNull(manager.findAllAnimals());
-        
-        Animal animal = newAnimal("Greg", 2012, MALE, false);
-        manager.createAnimal(animal);
-        
-        List<Animal> listExpected = new ArrayList<Animal>();
-        listExpected.add(animal);
-        
-        Animal animal2 = newAnimal(null, 2010, FEMALE, true);
-        manager.createAnimal(animal2);
-        listExpected.add(animal2);
-        
-        Animal animal3 = newAnimal("Lexi", 2000, null, true);
-        manager.createAnimal(animal3);
-        listExpected.add(animal3);
-        
-        assertDeepEquals(listExpected,manager.findAllAnimals());
-    }
-    
-    
     /**
      * Test of deleteAnimal method, of class AnimalManagerImpl.
      */
@@ -456,13 +397,16 @@ public class AnimalManagerImplTest {
         manager.createAnimal(dontAffectAnimal);
         
         manager.neuterAnimal(animal);
-        assertEquals(true, animal.isNeutered());
+        Animal animal2 = manager.getAnimalByID(animal.getAnimalID());
+        
+        assertEquals(true, animal2.isNeutered());
         
         animal = newAnimal("Bad", 2004, MALE, true);
-        manager.updateAnimal(animal);
-        
+        manager.createAnimal(animal);
         manager.neuterAnimal(animal);
-        assertEquals(true, animal.isNeutered());
+        
+        animal2 = manager.getAnimalByID(animal.getAnimalID());
+        assertEquals(true, animal2.isNeutered());
         
         assertDeepEquals(dontAffectAnimal, manager.getAnimalByID(dontAffectAnimal.getAnimalID()));
         
@@ -503,5 +447,3 @@ public class AnimalManagerImplTest {
     };
 }
 
-
-    

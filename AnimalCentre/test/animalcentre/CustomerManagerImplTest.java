@@ -5,11 +5,19 @@
  */
 package animalcentre;
 
-import java.util.*;
+import static animalcentre.Gender.*;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.sql.DataSource;
+import java.sql.*;
 
 /**
  *
@@ -17,27 +25,76 @@ import static org.junit.Assert.*;
  */
 public class CustomerManagerImplTest {
     
-    private CustomerManagerImpl manager;
+    private CustomerManager manager;
+    private DataSource ds;
 
+    
+    
     @Before
-    public void setUp() throws SQLException {
-        manager = new CustomerManagerImpl();
-    }
-
+    public void setUp() throws SQLException, IOException {
+               
+        ds = DBstuff.dataSource2();
+        
+        try (Connection conn = ds.getConnection()){
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_CUSTOMER)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+        
+        //try (Connection conn = ds.getConnection()) {            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_CUSTOMER)){
+                pr.executeUpdate();
+            }
+        }  //}
+        manager = new CustomerManagerImpl(ds); 
+    } 
+    
+    /*
+    @Before
+    public void setUp() throws SQLException, IOException {
+               
+        ds = DBstuff.dataSource2();
+        
+        try (Connection conn = ds.getConnection()) {            
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.CREATE_TABLE_CUSTOMER)){
+                pr.executeUpdate();
+            }
+        } 
+        manager = new CustomerManagerImpl(ds);
+    } */
+    
+    @After
+    public void tearDown() throws SQLException, IOException {
+        ds = DBstuff.dataSource2();
+        try (Connection conn = ds.getConnection()){
+            try (PreparedStatement pr = conn.prepareStatement(DBstuff.FINAL_CUSTOMER)){                
+                    pr.executeUpdate();
+        } catch (SQLException e) { 
+            if (!e.getSQLState().equals("42Y55")) throw e;
+            }
+    } 
+}
+    
     @Test
     public void testCreateCustomer() {
-        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx"); //vytv. random customera
-        manager.createCustomer(customer); //vytv. rovnakeho cust. do manager
-        Long customerID = customer.getCustomerID(); 
-        assertNotNull(customerID); //nesmie byt null
-        Customer result = manager.getCustomerByID(customerID); 
-        assertEquals(customer, result);
-        assertNotSame(customer, result);
-        assertDeepEquals(customer, result);   
+               
+        System.out.println("creating a customer..");
+        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        manager.createCustomer(customer);
+        
+        Long custID = customer.getCustomerID();
+        assertNotNull(custID);
+        
+        Customer comp = manager.getCustomerByID(custID);
+        assertEquals(customer, comp);
+        assertNotSame(customer, comp);
+        assertDeepEquals(customer, comp);
     }
 
     public void createCustomerWithWrongAttributes() {
-
+            System.out.println("creating customers with wrong attributes..");
+            
         try {
             manager.createCustomer(null);
             fail();
@@ -95,6 +152,16 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testGetCustomerByID() {
+        System.out.println("getting customer by ID");
+        assertNull(manager.getCustomerByID(1L)); 
+
+        try {
+            manager.getCustomerByID(null);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }        
+        
         Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
         Long customerID = customer.getCustomerID(); 
@@ -108,19 +175,23 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testFindAllCustomers() {
-        //fail("The test case is a prototype.");
+        
+        System.out.println("looking for customers (list)..");
+        
         assertTrue(manager.findAllCustomers().isEmpty());
+        
         Customer customer1 = newCustomer("X Y", "adresa", "09xx xxx xxx");
         Customer customer2 = newCustomer("A B", "homeless", "09yy yyy yyy");   
-        Customer customer3 = newCustomer("C D", "dead", "N/A"); //because why not
+        Customer customer3 = newCustomer("C D", "dead", "N/A"); 
         manager.createCustomer(customer1);
         manager.createCustomer(customer2); 
-        manager.createCustomer(customer2); 
-        //List<Customer> expected = Arrays.asList(customer1,customer2,customer3);
-        List<Customer> customers = new ArrayList<Customer>(); //is that good..nobody knows
+        manager.createCustomer(customer3); 
+        
+        List<Customer> customers = new ArrayList<Customer>(); 
         customers.add(customer1);
         customers.add(customer2);
         customers.add(customer3);
+        
         List<Customer> copy = manager.findAllCustomers();        
         Collections.sort(customers,idComparator);
         Collections.sort(copy,idComparator);
@@ -133,23 +204,26 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testUpdateCustomer() {
-        //fail("The test case is a prototype.");
+                
         Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
         Customer customer2 = newCustomer("A B", "homeless", "09yy yyy yyy");
         manager.createCustomer(customer);
         manager.createCustomer(customer2); 
         
         Long cID = customer.getCustomerID();
-        
+        Long zeroID = 1L;
+                
         customer = manager.getCustomerByID(cID); //meni id
-        customer.setCustomerID(0L);
+        customer.setCustomerID(1L);
+                
         manager.updateCustomer(customer); 
-        Long zeroID = 0L;
+        
         assertEquals(zeroID, customer.getCustomerID());
         assertEquals("X Y", customer.getName());
         assertEquals("adresa", customer.getAddress());
         assertEquals("09xx xxx xxx",customer.getPhoneNumber());
-
+        
+        
         customer = manager.getCustomerByID(cID); //meni meno
         customer.setName("A A");
         manager.updateCustomer(customer);        
@@ -179,10 +253,26 @@ public class CustomerManagerImplTest {
 
     @Test
     public void testUpdateCustomerWithWrongAttributes() {
-
+        System.out.println("updating customer with wrong attributes..");
         Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
         manager.createCustomer(customer);
         Long customerID = customer.getCustomerID();
+        
+        Customer dontAffect = newCustomer("X", "ad", "09");
+        manager.createCustomer(dontAffect);
+        
+ 
+        Customer customer2 = manager.getCustomerByID(customerID);
+        
+        customer = manager.getCustomerByID(customerID); //meni id
+        customer.setCustomerID(0L);
+        
+        try {
+            manager.updateCustomer(customer); 
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }  
         
         try {
             manager.updateCustomer(null);
@@ -191,50 +281,58 @@ public class CustomerManagerImplTest {
             //OK
         }
         
+        customer2.setCustomerID(-100L);
+        
         try {
-            customer = manager.getCustomerByID(customerID);
-            customer.setCustomerID(null);
-            manager.updateCustomer(customer);        
+            manager.updateCustomer(customer2);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
+        
+        customer2.setCustomerID(customer.getCustomerID());
+        customer2.setName("");
+        
         try {
-            customer = manager.getCustomerByID(customerID);
-            customer.setCustomerID(-1L);
-            manager.updateCustomer(customer);        
+            manager.updateCustomer(customer2);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
+        
+        customer2.setName(customer.getName());
+        customer2.setAddress("");
+        
         try {
-            customer = manager.getCustomerByID(customerID);
-            customer.setName(null);
-            manager.updateCustomer(customer);        
+            manager.updateCustomer(customer2);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
+        
+        customer2.setAddress(customer.getAddress());
+        customer2.setPhoneNumber("");
+        
         try {
-            customer = manager.getCustomerByID(customerID);
-            customer.setAddress(null);
-            manager.updateCustomer(customer);        
+            manager.updateCustomer(customer2);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
+        
+        customer2.setPhoneNumber(customer.getPhoneNumber());
+        
+        Customer customer3 = newCustomer("Who", "where", "123");
+        customer3.setCustomerID(8L); //not in table?
         try {
-            customer = manager.getCustomerByID(customerID);
-            customer.setPhoneNumber(null);
-            manager.updateCustomer(customer);        
+            manager.updateCustomer(customer3);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
+                       
+        assertDeepEquals(customer,customer2);
+        assertDeepEquals(dontAffect, manager.getCustomerByID(dontAffect.getCustomerID()));       
 
 }
     
@@ -243,18 +341,34 @@ public class CustomerManagerImplTest {
      */
     @Test
     public void testDeleteCustomer() {
-        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        System.out.println("deleting customers..");        
+        Customer dontAffectCustomer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        manager.createCustomer(dontAffectCustomer);
+        
+        Customer customer= newCustomer("Who", "where", "123");
         manager.createCustomer(customer);
-        Long cID = customer.getCustomerID();
-        manager.deleteCustomer(customer);
-        Customer pom = manager.getCustomerByID(cID);
-        assertNull(pom);
+        
+        manager.deleteCustomer(manager.getCustomerByID(customer.getCustomerID()));
+        assertNull(manager.getCustomerByID(customer.getCustomerID()));
+        
+        assertNotNull(manager.getCustomerByID(dontAffectCustomer.getCustomerID()));
+        assertDeepEquals(dontAffectCustomer, manager.getCustomerByID(dontAffectCustomer.getCustomerID()));
     }
     
     @Test
     public void testDeleteCustomerWithWrongAttributes() {
+        System.out.println("deleting customers with wrong attributes..");
 
-        Customer customer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        try {
+            manager.deleteCustomer(manager.getCustomerByID(1L)); //no animals present
+            fail();
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+        
+        Customer dontAffectCustomer = newCustomer("X Y", "adresa", "09xx xxx xxx");
+        manager.createCustomer(dontAffectCustomer);
+        
         
         try {
             manager.deleteCustomer(null);
@@ -262,7 +376,9 @@ public class CustomerManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
+        
+        Customer customer= newCustomer("Who", "where", "123");
+        
         try {
             customer.setCustomerID(null);
             manager.deleteCustomer(customer);
@@ -270,38 +386,9 @@ public class CustomerManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //OK
         }
-
-        try {
-            customer.setCustomerID(-1L);
-            manager.deleteCustomer(customer);
-            fail();
-        } catch (IllegalArgumentException ex) {
-            //OK
-        }
         
-        try {
-            customer.setName(null);
-            manager.deleteCustomer(customer);
-            fail();
-        } catch (IllegalArgumentException ex) {
-            //OK
-        }
-        
-        try {
-            customer.setAddress(null);
-            manager.deleteCustomer(customer);
-            fail();
-        } catch (IllegalArgumentException ex) {
-            //OK
-        }
-        
-        try {
-            customer.setPhoneNumber(null);
-            manager.deleteCustomer(customer);
-            fail();
-        } catch (IllegalArgumentException ex) {
-            //OK
-        }
+        assertNotNull(manager.getCustomerByID(dontAffectCustomer.getCustomerID()));
+        assertDeepEquals(dontAffectCustomer, manager.getCustomerByID(dontAffectCustomer.getCustomerID()));
     }
         
     /***************************POMOCNE METODY***********************************/
@@ -335,32 +422,6 @@ public class CustomerManagerImplTest {
         }
     };
 
-    /*class customerBuilder {
-    private int id = 0;
-    private String name = "aaaa";
-    private String add = "adddd";
-    private String pn = "sdf";
-
-        public void Id(int id) {
-            this.id = id;
-        }
-
-        public CustomerBuilder Name(String name) {//takto vsetky
-            this.name = name;
-            return this;
-        }
-
-        public void Add(String add) {
-            this.add = add;
-        }
-
-        public void Pn(String pn) {
-            this.pn = pn;
-        }
     
-        
-    
-        
-    }*/
 
 }
